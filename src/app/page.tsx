@@ -1,101 +1,206 @@
-import Image from "next/image";
+// app/page.tsx
+"use client";
+import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
-export default function Home() {
+const Home: React.FC = () => {
+  const router = useRouter();
+  const [selectedColor, setSelectedColor] = useState<string>('#F2D1C9');
+  const [colors, setColors] = useState(['#F2E7DC', '#403837', '#A68C8A']);
+  const [isHovered, setIsHovered] = useState(false);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+  const texts = ["Welcome to", "Cecilia Lieberia's", "Site"];
+
+  const handleColorToggle = () => {
+    const newBaseColor = colors[2];
+    const rotatedColors = [
+      selectedColor, 
+      ...colors.slice(0, 2)
+    ];
+
+    setSelectedColor(newBaseColor);
+    setColors(rotatedColors);
+  };
+
+  const getContrastColor = (backgroundColor: string) => {
+    const hex = backgroundColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 125 ? 'black' : 'white';
+  };
+
+  const textColor = useMemo(() => getContrastColor(selectedColor), [selectedColor]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleTextClick = () => {
+    router.push('/home');
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      style={{ 
+        width: '100vw', 
+        height: '100vh', 
+        backgroundColor: selectedColor,
+        transition: 'background-color 0.5s ease',
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentTextIndex}
+          initial={{ 
+            opacity: 0, 
+            scale: 0.8,
+            rotateX: 90 
+          }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1,
+            rotateX: 0,
+            transition: { 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 20 
+            }
+          }}
+          exit={{ 
+            opacity: 0, 
+            scale: 1.2,
+            rotateX: -90,
+            transition: { duration: 0.3 }
+          }}
+          onClick={handleTextClick}
+          style={{
+            position: 'absolute',
+            color: textColor,
+            fontSize: '3rem',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            cursor: 'pointer',
+            transformOrigin: 'center'
+          }}
+        >
+          {texts[currentTextIndex]}
+        </motion.div>
+      </AnimatePresence>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      <motion.div
+        animate={{ 
+          opacity: [0.6, 1, 0.6],
+          transition: { 
+            repeat: Infinity, 
+            duration: 2,
+            ease: "easeInOut"
+          }
+        }}
+        style={{
+          position: 'absolute',
+          bottom: 100,
+          color: textColor,
+          fontFamily: 'Inter, sans-serif',
+          fontWeight: 600,
+          letterSpacing: '0.05em',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10
+        }}
+      >
+        <motion.svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={textColor}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={{ x: 0 }}
+          animate={{
+            x: [0, 10, 0],
+            transition: {
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+          <path d="M13 17l5-5-5-5M6 17l5-5-5-5" />
+        </motion.svg>
+        Click The Animated Text
+      </motion.div>
+
+      <motion.div 
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        style={{
+          position: 'absolute',
+          bottom: 15,
+          right: 15,
+          width: 50,
+          height: 50,
+          borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'pointer',
+          opacity: isHovered ? 1 : 0.3,
+          transition: 'opacity 0.3s ease'
+        }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={handleColorToggle}
+      >
+        {colors.map((color, index) => (
+          <motion.div
+            key={color}
+            initial={{ 
+              y: index === 2 ? 100 : 0,
+              scale: index === 2 ? 1.2 : 1 
+            }}
+            animate={{ 
+              y: isHovered ? 0 : (index === 2 ? 100 : 0),
+              scale: isHovered ? 1 : (index === 2 ? 1.2 : 1),
+              transition: { 
+                duration: 0.3,
+                ease: "easeInOut" 
+              }
+            }}
+            style={{
+              position: 'absolute',
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              backgroundColor: color,
+              transform: `translateY(${index * 20}px)`,
+              opacity: isHovered ? 1 : 0.5
+            }}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        ))}
+      </motion.div>
+    </motion.div>
   );
-}
+};
+
+export default Home;

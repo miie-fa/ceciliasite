@@ -14,8 +14,36 @@
   }
 }
 
+/* styles/globals.css */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden; /* Mencegah scroll horizontal */
 }
+
+h1, h2 {
+  transition: transform 0.2s ease-out; /* Transisi halus untuk teks */
+}
+
+/* Hide scrollbar background */
+::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar */
+  background: transparent; /* No background */
+}
+
+/* Show scrollbar on hover */
+.scrollable-element:hover::-webkit-scrollbar {
+  width: 8px; /* Width when hovered */
+}
+
+/* Customize scrollbar thumb */
+.scrollable-element::-webkit-scrollbar-thumb {
+  background: #d4aa70; /* Thumb color */
+  border-radius: 10px; /* Rounded corners */
+}
+
+/* Optional: Change thumb color on hover */
+.scrollable-element::-webkit-scrollbar-thumb:hover {
+  background: #b58a5b; /* Darker color on hover */
+}
+
