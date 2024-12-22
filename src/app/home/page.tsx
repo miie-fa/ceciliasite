@@ -1,16 +1,19 @@
 // app/home/page.tsx
 "use client";
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import React, { useState, useMemo, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import styles from './home.module.css';
 
 const HomePage: React.FC = () => {
-  const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>('#F2D1C9');
   const [colors, setColors] = useState(['#F2E7DC', '#403837', '#A68C8A']);
   const [isHovered, setIsHovered] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
+
+  const { scrollY } = useScroll();
+  const scale = useTransform(scrollY, [0, 300], [1, 0.5]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.7]);
 
   const handleColorToggle = () => {
     const newBaseColor = colors[2];
@@ -35,6 +38,15 @@ const HomePage: React.FC = () => {
 
   const textColor = useMemo(() => getContrastColor(selectedColor), [selectedColor]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 200);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -45,41 +57,68 @@ const HomePage: React.FC = () => {
       style={{ backgroundColor: selectedColor }}
     >
       <div className={styles.contentWrapper}>
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-          className={styles.textContainer}
+        <h1 
+          className={styles.introTitle}
           style={{ color: textColor }}
         >
           Introducing here Cecilia Lieberia from Re:Memories 3rd Generation
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7 }}
-          className={styles.imageContainer}
-        >
-          <Image 
-            src="/CeciliaLieberiaIdolForm.png" 
-            alt="Cecilia Lieberia" 
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={styles.responsiveImage}
-            style={{ 
-              objectFit: 'contain',
-              objectPosition: 'center'
+        </h1>
+
+        <div className={styles.mainContent}>
+          <section 
+            className={styles.descriptionSection}
+            style={{ color: textColor }}
+          >
+            <h2>About Cecilia</h2>
+            <article>
+              <p>
+                Cecilia Lieberia adalah seorang VTuber Indonesia yang merupakan bagian dari agensi Re:Memories. Dia debut pada 15 Mei 2022 sebagai anggota Generasi Ketiga bersama dengan Elaine Celestia.
+              </p>
+              <p>
+                Karakternya memiliki latar belakang yang menarik sebagai seorang pustakawan yang telah lama tertidur dan sekarang mencari teman di dunia virtual untuk menghilangkan rasa kesepiannya.
+              </p>
+              <h3>Desain Karakter</h3>
+              <ul>
+                <li>Rambut pirang pasir dengan gaya twin-tails bergelombang</li>
+                <li>Mata biru</li>
+                <li>Mengenakan kacamata</li>
+                <li>Memakai baret cokelat tua dengan pita</li>
+                <li>Tinggi badan 140 cm</li>
+              </ul>
+            </article>
+          </section>
+
+          <motion.div
+            className={`${styles.imageContainer} ${isSticky ? styles.stickyImage : ''}`}
+            style={{
+              scale: scale,
+              opacity: opacity,
             }}
-          />
-        </motion.div>
+          >
+            <Image 
+              src="/CeciliaLieberiaIdolForm.png" 
+              alt="Cecilia Lieberia" 
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={styles.responsiveImage}
+              style={{ 
+                objectFit: 'contain',
+                objectPosition: 'center'
+              }}
+            />
+          </motion.div>
+        </div>
       </div>
 
       <motion.div 
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
         className={styles.colorToggleButton}
-        style={{ opacity: isHovered ? 1 : 0.3 }}
+        style={{ 
+          opacity: isHovered ? 1 : 0.3,
+          zIndex: 10 
+        }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={handleColorToggle}

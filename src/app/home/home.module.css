@@ -1,29 +1,58 @@
 /* app/home/home.module.css */
 .pageContainer {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
   transition: background-color 0.5s ease;
+  padding: 2rem;
 }
 
 .contentWrapper {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   width: 80%;
   max-width: 1200px;
   gap: 2rem;
 }
 
-.textContainer {
-  max-width: 50%;
+.introTitle {
+  max-width: 100%;
   font-size: 2rem;
   font-weight: 600;
   line-height: 1.4;
+  text-align: center;
+}
+
+.mainContent {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 2rem;
+}
+
+.descriptionSection {
+  flex: 1;
+  max-width: 50%;
+}
+
+.descriptionSection h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.descriptionSection h3 {
+  font-size: 1.2rem;
+  margin: 1rem 0;
+}
+
+.descriptionSection ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
 }
 
 .imageContainer {
@@ -31,12 +60,22 @@
   width: 400px;
   height: 600px;
   max-width: 50%;
+  transition: all 0.3s ease;
+}
+
+.stickyImage {
+  position: fixed;
+  bottom: 100px;
+  right: 50px;
+  z-index: 5;
+  width: 200px;
+  height: 300px;
 }
 
 .responsiveImage {
   border-radius: 15px;
-  box-shadow: none; /* Hapus bayangan */
-  background: transparent; /* Pastikan background transparan */
+  box-shadow: none;
+  background: transparent;
 }
 
 .colorToggleButton {
@@ -52,6 +91,7 @@
   align-items: center;
   cursor: pointer;
   transition: opacity 0.3s ease;
+  z-index: 10;
 }
 
 .colorToggleItem {
@@ -63,29 +103,44 @@
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
-  .contentWrapper {
+  .mainContent {
     flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
-  .textContainer {
+  .descriptionSection,
+  .imageContainer {
     max-width: 100%;
-    margin-bottom: 2rem;
   }
 
   .imageContainer {
     width: 300px;
     height: 450px;
   }
+
+  .stickyImage {
+    width: 150px;
+    height: 225px;
+    bottom: 80px;
+    right: 20px;
+  }
 }
 
 @media (max-width: 768px) {
-  .textContainer {
+  .introTitle {
     font-size: 1.5rem;
   }
 
   .imageContainer {
     width: 250px;
     height: 375px;
+  }
+
+  .stickyImage {
+    width: 120px;
+    height: 180px;
+    bottom: 70px;
+    right: 10px;
   }
 }
