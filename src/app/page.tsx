@@ -11,6 +11,7 @@ const Home: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const animationContainer = useRef<HTMLDivElement | null>(null);
+  // @ts-ignore
   const animationInstance = useRef<any>(null);
 
   useEffect(() => {
