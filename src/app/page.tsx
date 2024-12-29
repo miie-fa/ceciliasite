@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import lottie, { AnimationItem } from 'lottie-web'; // Impor AnimationItem
+import lottie, { AnimationItem } from 'lottie-web';
 
 const Home: React.FC = () => {
   const router = useRouter();
@@ -10,23 +10,20 @@ const Home: React.FC = () => {
   const [colors, setColors] = useState(['#FFD1DC', '#FFC0CB', '#FFA07A']);
   const [isHovered, setIsHovered] = useState(false);
   const animationContainer = useRef<HTMLDivElement | null>(null);
-  const animationInstance = useRef<AnimationItem | null>(null); // Ganti any dengan AnimationItem
+  const animationInstance = useRef<AnimationItem | null>(null);
 
   useEffect(() => {
-    // Memastikan animasi hanya dimuat di klien
     if (animationContainer.current) {
       animationInstance.current = lottie.loadAnimation({
         container: animationContainer.current,
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path: '/data.json',
+        path: '/data.json', // Pastikan path ini benar
       });
 
       return () => {
-        if (animationInstance.current) {
-          animationInstance.current.destroy();
-        }
+        animationInstance.current?.destroy();
       };
     }
   }, []);
@@ -83,7 +80,7 @@ const Home: React.FC = () => {
           width: '100vw', 
           height: '100vh', 
           backgroundColor: selectedColor,
-          transition : 'background-color 0.5s ease',
+          transition : 'background-color 0 .5s ease',
           overflow: 'hidden',
           position: 'relative',
           display: 'flex',
