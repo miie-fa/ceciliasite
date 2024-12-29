@@ -2,19 +2,33 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import lottie from 'lottie-web';
+import lottie, { AnimationItem } from 'lottie-web'; // Impor AnimationItem
 
 const Home: React.FC = () => {
   const router = useRouter();
   const [selectedColor, setSelectedColor] = useState<string>('#F2D1C9');
   const [colors, setColors] = useState(['#FFD1DC', '#FFC0CB', '#FFA07A']);
   const [isHovered, setIsHovered] = useState(false);
-  const [isClient, setIsClient] = useState(false);
   const animationContainer = useRef<HTMLDivElement | null>(null);
-  const animationInstance = useRef<any>(null);
+  const animationInstance = useRef<AnimationItem | null>(null); // Ganti any dengan AnimationItem
 
   useEffect(() => {
-    setIsClient(true);
+    // Memastikan animasi hanya dimuat di klien
+    if (animationContainer.current) {
+      animationInstance.current = lottie.loadAnimation({
+        container: animationContainer.current,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/data.json',
+      });
+
+      return () => {
+        if (animationInstance.current) {
+          animationInstance.current.destroy();
+        }
+      };
+    }
   }, []);
 
   const handleColorToggle = () => {
@@ -40,29 +54,9 @@ const Home: React.FC = () => {
 
   const textColor = useMemo(() => getContrastColor(selectedColor), [selectedColor]);
 
-  useEffect(() => {
-    if (animationContainer.current && isClient) {
-      animationInstance.current = lottie.loadAnimation({
-        container: animationContainer.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/data.json',
-      });
-
-      return () => {
-        if (animationInstance.current) {
-          animationInstance.current.destroy();
-        }
-      };
-    }
-  }, [isClient]);
-
   const handleTextClick = () => {
     router.push('/home');
   };
-
-  if (!isClient) return null;
 
   return (
     <>
@@ -89,7 +83,7 @@ const Home: React.FC = () => {
           width: '100vw', 
           height: '100vh', 
           backgroundColor: selectedColor,
-          transition: 'background-color 0.5s ease',
+          transition : 'background-color 0.5s ease',
           overflow: 'hidden',
           position: 'relative',
           display: 'flex',
