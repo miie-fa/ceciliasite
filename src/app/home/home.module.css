@@ -1,146 +1,82 @@
-/* app/home/home.module.css */
 .pageContainer {
+  position: relative;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-x: hidden;
-  position: relative;
-  transition: background-color 0.5s ease;
-  padding: 2rem;
 }
 
-.contentWrapper {
+.backgroundImage {
+  position: absolute;
+  z-index: -1;
+}
+
+.contentContainer {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 80%;
-  max-width: 1200px;
-  gap: 2rem;
+  gap: 50px; /* Jarak antara card dan foto */
 }
 
-.introTitle {
-  max-width: 100%;
-  font-size: 2rem;
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.mainContent {
+.cardSection {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 2rem;
-}
-
-.descriptionSection {
-  flex: 1;
-  max-width: 50%;
-}
-
-.descriptionSection h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.descriptionSection h3 {
-  font-size: 1.2rem;
-  margin: 1rem 0;
-}
-
-.descriptionSection ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
-}
-
-.imageContainer {
-  position: relative;
-  width: 400px;
-  height: 600px;
-  max-width: 50%;
-  transition: all 0.3s ease;
-}
-
-.stickyImage {
-  position: fixed;
-  bottom: 100px;
-  right: 50px;
-  z-index: 5;
-  width: 200px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   height: 300px;
 }
 
-.responsiveImage {
-  border-radius: 15px;
-  box-shadow: none;
-  background: transparent;
-}
-
-.colorToggleButton {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: rgba(255,255,255,0.1);
+.cardWrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 220px;
+  height: 280px;
   cursor: pointer;
-  transition: opacity 0.3s ease;
-  z-index: 10;
+  perspective: 1000px; /* Tambahkan untuk efek 3D */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.colorToggleItem {
-  position: absolute;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+.cardWrapper:hover {
+  transform: translateY(-15px);
 }
 
-/* Responsive Adjustments */
-@media (max-width: 1024px) {
-  .mainContent {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .descriptionSection,
-  .imageContainer {
-    max-width: 100%;
-  }
-
-  .imageContainer {
-    width: 300px;
-    height: 450px;
-  }
-
-  .stickyImage {
-    width: 150px;
-    height: 225px;
-    bottom: 80px;
-    right: 20px;
-  }
+.card {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 15px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-@media (max-width: 768px) {
-  .introTitle {
-    font-size: 1.5rem;
-  }
+.cardWrapper:active .card {
+  transform: rotateY(180deg); /* Animasi flip 3D */
+}
 
-  .imageContainer {
-    width: 250px;
-    height: 375px;
-  }
+.photoSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 350px;
+  height: 400px;
+}
 
-  .stickyImage {
-    width: 120px;
-    height: 180px;
-    bottom: 70px;
-    right: 10px;
-  }
+.largePhoto {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+}
+
+.largePhoto:hover {
+  transform: scale(1.05);
+}
+
+/* Tambahan efek hover */
+.card:hover {
+  transform: scale(1.05);
 }
